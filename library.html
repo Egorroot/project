@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Библиотека | SchoolNet</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="dropdown">
+            <button class="dropbtn">Меню</button>
+            <div class="drop_content">
+                <a href="forum.html">Форум</a>
+                <a href="library.html">Библиотека</a>
+                <a href="questions.html">Вопрос-Ответ</a>
+            </div>
+        </div>
+        
+        <a href="index.html" class="logo_link">SchoolNet</a>
+
+        <div class="auth_link">
+            <a href="#">Вход</a>
+        </div>
+    </header>
+
+    <main class="body_full">
+        <div class="header-line">
+            <h1 class="liblogo">Библиотека</h1>
+            <button onclick="addCategoryCard()" class="btn-dark">+ Добавить карточку</button>
+        </div>
+
+        <div class="container" id="cardsContainer">
+            <div class="category-card visible">
+                <h3>HTML</h3>
+                <p>Изучите основы разметки веб-страниц.</p>
+                <div class="card-actions">
+                    <a href="pages/html-basics.html" class="btn">Читать</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <p class="doki">© SchoolNet | Учебная платформа для школьников</p>
+    </footer>
+
+    <script src = 'script.js'></script>
+    <div id="nameModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Введите название темы</h3>
+            <input type="text" id="cardNameInput" placeholder="Название темы">
+            <div class="modal-actions">
+                <button onclick="confirmName()">Создать</button>
+                <button onclick="cancelName()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

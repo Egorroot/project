@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вопрос-Ответ | SchoolNet</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="questions.css">
+</head>
+<body>
+    <header class="header">
+        <div class="dropdown">
+            <button class="dropbtn">Меню</button>
+            <div class="drop_content">
+                <a href="forum.html">Форум</a>
+                <a href="library.html">Библиотека</a>
+                <a href="questions.html">Вопрос-Ответ</a>
+            </div>
+        </div>
+
+        <a href="index.html" class="logo_link">SchoolNet</a>
+
+        <div class="auth_link">
+            <a href="#">Вход</a>
+        </div>
+    </header>
+
+    <main class="qa_wrapper">
+    <main class="qa_page">
+        <div class="qa_header_zone">
+            <h1 class="qa_big_title">Вопрос-Ответ</h1>
+            <button class="qa_add_btn">+ Задать вопрос</button>
+        </div>
+
+        <div class="qa_block_list">
+            <div class="qa_item">
+                <h3 class="qa_item_title">Как работает HTML?</h3>
+                <p class="qa_item_author">Задан: <b>Иван П.</b></p>
+                <p class="qa_item_text">Объясните простыми словами, что делает HTML и зачем он нужен при создании сайтов.</p>
+                <div class="qa_answers_zone">
+                    <div class="qa_answer_item">
+                        <p><b>Ответ:</b> HTML — это язык разметки, который задаёт структуру страницы: заголовки, абзацы, ссылки и т.д.</p>
+                    </div>
+                </div>
+                <button class="qa_reply_btn">Ответить</button>
+            </div>
+        </div>
+    </main>
+    </main>
+
+    <footer class="footer">
+        <p class="doki">Допустим будет какая-нибудь документация или можно оставить пустым</p>
+    </footer>
+
+    
+    <!-- ===== МОДАЛКА: ЗАДАТЬ ВОПРОС ===== -->
+<div id="qa_modal_ask" class="qa_modal_wrap" aria-hidden="true">
+  <div class="qa_modal_box">
+    <button class="qa_modal_close_btn" data-modal="qa_modal_ask" aria-label="Закрыть">&times;</button>
+    <h3 class="qa_modal_heading">Задать вопрос</h3>
+    <form id="qa_form_ask" class="qa_modal_form">
+      <input name="author" class="qa_field" type="text" placeholder="Ваше имя" required>
+      <input name="class" class="qa_field" type="text" placeholder="Класс (напр. 8А)" required>
+      <input name="topic" class="qa_field" type="text" placeholder="Тема вопроса" required>
+      <textarea name="question" class="qa_textarea" placeholder="Опишите ваш вопрос..." required></textarea>
+      <div class="qa_modal_actions">
+        <button type="button" class="qa_btn qa_btn_cancel" data-modal="qa_modal_ask">Отмена</button>
+        <button type="submit" class="qa_btn qa_btn_submit">Опубликовать</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== МОДАЛКА: ОТВЕТИТЬ ===== -->
+<div id="qa_modal_answer" class="qa_modal_wrap" aria-hidden="true">
+  <div class="qa_modal_box">
+    <button class="qa_modal_close_btn" data-modal="qa_modal_answer" aria-label="Закрыть">&times;</button>
+    <h3 class="qa_modal_heading">Добавить ответ</h3>
+    <form id="qa_form_answer" class="qa_modal_form">
+      <input name="author" class="qa_field" type="text" placeholder="Ваше имя" required>
+      <textarea name="answer" class="qa_textarea" placeholder="Напишите ответ..." required></textarea>
+      <!-- скрытое поле, куда JS поместит id вопроса -->
+      <input type="hidden" name="question_id" id="qa_answer_question_id">
+      <div class="qa_modal_actions">
+        <button type="button" class="qa_btn qa_btn_cancel" data-modal="qa_modal_answer">Отмена</button>
+        <button type="submit" class="qa_btn qa_btn_submit">Отправить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/*
+  Универсальный JS для открытия/закрытия модалок и привязки кнопок "Задать вопрос" и "Ответить".
+  Работает даже если кнопки появляются динамически.
+*/
+
+(function(){
+  // селекторы — уникальны для этого файла
+  const ASK_BUTTON_SELECTOR = '[data-open="qa-ask"]';      // кнопка "Задать вопрос" — ставь data-open="qa-ask"
+  const ANSWER_BUTTON_SELECTOR = '[data-open="qa-answer"]';// кнопки "Ответить" — ставь data-open="qa-answer" и data-id="ID_ВОПРОСА"
+  const MODAL_ATTR = 'data-modal-id';
+
+  // функции показа/скрытия модалки — используют aria-hidden
+  function showModal(modalEl){
+    if(!modalEl) return;
+    modalEl.setAttribute('aria-hidden','false');
+  }
+  function hideModal(modalEl){
+    if(!modalEl) return;
+    modalEl.setAttribute('aria-hidden','true');
+  }
+
+  // прикрепим делегирование: на document слушаем клики по кнопкам открытия/закрытия
+  document.addEventListener('click', function(e){
+    // открыть модалку "Задать вопрос"
+    const askBtn = e.target.closest(ASK_BUTTON_SELECTOR);
+    if(askBtn){
+      const modal = document.getElementById('qa_modal_ask');
+      showModal(modal);
+      return;
+    }
+
+    // открыть модалку "Ответить" — кнопки должны иметь data-id (id вопроса)
+    const answerBtn = e.target.closest(ANSWER_BUTTON_SELECTOR);
+    if(answerBtn){
+      const questionId = answerBtn.getAttribute('data-id') || answerBtn.dataset.id;
+      const modal = document.getElementById('qa_modal_answer');
+      // поместим id в скрытое поле
+      const hidden = document.getElementById('qa_answer_question_id');
+      if(hidden) hidden.value = questionId || '';
+      showModal(modal);
+      return;
+    }
+
+    // кнопки закрыть/отмена — кнопки имеют data-modal атрибут у нас в HTML close и cancel
+    const closeBtn = e.target.closest('.qa_modal_close_btn');
+    if(closeBtn){
+      const targetId = closeBtn.getAttribute('data-modal') || closeBtn.dataset.modal;
+      // если у кнопки нет data-modal — просто закроем родительский модал
+      if(targetId){
+        const modal = document.getElementById(targetId);
+        hideModal(modal);
+      } else {
+        // ищем ближайший .qa_modal_wrap
+        const parentModal = e.target.closest('.qa_modal_wrap');
+        hideModal(parentModal);
+      }
+      return;
+    }
+
+    const cancelBtn = e.target.closest('.qa_btn_cancel');
+    if(cancelBtn){
+      const modalId = cancelBtn.getAttribute('data-modal');
+      if(modalId){
+        const modal = document.getElementById(modalId);
+        hideModal(modal);
+      } else {
+        const parentModal = e.target.closest('.qa_modal_wrap');
+        hideModal(parentModal);
+      }
+      return;
+    }
+  });
+
+  // Закрытие по клику на фон
+  document.querySelectorAll('.qa_modal_wrap').forEach(modalEl=>{
+    modalEl.addEventListener('click', function(ev){
+      if(ev.target === modalEl){ hideModal(modalEl); }
+    });
+  });
+
+  // Обработка сабмита форм (локально — пока без сервера)
+  const askForm = document.getElementById('qa_form_ask');
+  if(askForm){
+    askForm.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      // можно получить данные:
+      const formData = new FormData(askForm);
+      // Пример: вывести в консоль и закрыть модалку
+      console.log('Новый вопрос:', Object.fromEntries(formData.entries()));
+      hideModal(document.getElementById('qa_modal_ask'));
+      // TODO: здесь отправлять данные на сервер
+      alert('Вопрос добавлен (пример).');
+    });
+  }
+
+  const answerForm = document.getElementById('qa_form_answer');
+  if(answerForm){
+    answerForm.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      const formData = new FormData(answerForm);
+      console.log('Новый ответ:', Object.fromEntries(formData.entries()));
+      hideModal(document.getElementById('qa_modal_answer'));
+      alert('Ответ добавлен (пример).');
+    });
+  }
+
+  // Дополнительно: если у тебя уже есть кнопка в шапке для "Задать вопрос", но без data-open,
+  // можно автоматически пометить её (опционально). Ниже — пример: если элемент с id openQuestionForm есть — пометим.
+  const headerAsk = document.getElementById('openQuestionForm');
+  if(headerAsk && !headerAsk.hasAttribute('data-open')){
+    headerAsk.setAttribute('data-open','qa-ask');
+    headerAsk.setAttribute('data-open-legacy','true');
+    // также можно добавить ASK_BUTTON_SELECTOR класс — но делегирование уже ловит этот атрибут
+  }
+
+})();
+</script>
+</body>
+</html>
