@@ -1,10 +1,27 @@
 let cardCounter = 1;
 
-function addCategoryCard() {
-    // Показываем модальное окно
-    document.getElementById('nameModal').style.display = 'block';
-    document.getElementById('cardNameInput').focus();
-}
+const ASK_BUTTON_SELECTOR = '[data-open="qa-ask"]';      // кнопка "Задать вопрос" — ставь data-open="qa-ask"
+
+function showModal(modalEl){
+    if(!modalEl) return;
+    modalEl.setAttribute('aria-hidden','false');
+  }
+  function hideModal(modalEl){
+    if(!modalEl) return;
+    modalEl.setAttribute('aria-hidden','true');
+  }
+
+  // прикрепим делегирование: на document слушаем клики по кнопкам открытия/закрытия
+    document.addEventListener('click', function(e){
+    // открыть модалку "Задать вопрос"
+    const askBtn = e.target.closest(ASK_BUTTON_SELECTOR);
+    if(askBtn){
+      const modal = document.getElementById('nameModal');
+      showModal(modal);
+      return;
+    }
+    
+});
 
 function confirmName() {
     const cardName = document.getElementById('cardNameInput').value.trim();

@@ -20,14 +20,14 @@
         <a href="index.html" class="logo_link">SchoolNet</a>
 
         <div class="auth_link">
-            <a href="#">Вход</a>
+            <a href="login.html">Вход</a>
         </div>
     </header>
 
     <main class="body_full">
         <div class="header-line">
             <h1 class="liblogo">Библиотека</h1>
-            <button onclick="addCategoryCard()" class="btn-dark">+ Добавить карточку</button>
+            <button class="btn-dark" data-open="qa-ask">+ Добавить карточку</button>
         </div>
 
         <div class="container" id="cardsContainer">
@@ -46,7 +46,7 @@
     </footer>
 
     <script src = 'script.js'></script>
-    <div id="nameModal" class="modal" style="display: none;">
+    <div id="nameModal" class="modal" aria-hidden = 'true'>
         <div class="modal-content">
             <h3>Введите название темы</h3>
             <input type="text" id="cardNameInput" placeholder="Название темы">
